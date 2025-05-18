@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cyberbullying-app
+  template:
+    metadata:
+      labels:
+        app: cyberbullying-app
+    spec:
+      containers:
+      - name: webapp-container
+        image: aadilmhusain/cyberbullying-app  # This gets overwritten by Jenkins
+        ports:
+        - containerPort: 8501
+        volumeMounts:
+        - name: log-volume
+          mountPath: /var/log/app
+      volumes:
+      - name: log-volume
+        emptyDir: {}
