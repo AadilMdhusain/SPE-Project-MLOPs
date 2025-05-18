@@ -48,17 +48,27 @@ pipeline {
             }
         }
 
-        stage('Start Minikube and Apply Kubernetes Resources') {
-            steps {
+	stage('Start Minikube and Apply Kubernetes Resources') {
+    	    steps {
                 script {
-                    echo "Starting Minikube..."
-                    sh 'minikube start --driver=docker'
+            echo "Cleaning up old Minikube instances..."
+            sh '''
+            if docker ps -a --format '{{.Names}}' | grep -q "^minikube$"; then
+                echo "Old minikube container exists. Deleting..."
+                minikube delete || true
+                docker rm -f minikube || true
+            fi
+            '''
 
-                    echo "Applying Kubernetes resources..."
-                    sh 'kubectl apply -f kubernetes/'
-                }
-            }
+            echo "Starting Minikube..."
+            sh 'minikube start --driver=docker'
+
+            echo "Applying Kubernetes resources..."
+            sh 'kubectl apply -f kubernetes/'
+           }
         }
+     }
+
 
         stage('Deploy to Kubernetes') {
             steps {
