@@ -1,42 +1,50 @@
 # importing libraries
 
-from ctypes import alignment
-from urllib import response
 import pandas as pd
 import streamlit as st
 import altair as alt
 from PIL import Image
-import pandas as pd
 import numpy as np
 import re
 import string
 from nltk.stem import WordNetLemmatizer
-from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.preprocessing import LabelEncoder
 from nltk.tokenize import RegexpTokenizer
 from nltk import PorterStemmer, WordNetLemmatizer
 from functions import *
 import pickle
-
-
 import logging
 import os
 
+# ---------------------------
+# Setup Logging
+# ---------------------------
 log_file = os.getenv("LOG_FILE_PATH", "/var/log/app/webapp.log")
-logging.basicConfig(
-    filename=log_file,
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s'
-)
+os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
-# Page title
+if logger.hasHandlers():
+    logger.handlers.clear()
 
+file_handler = logging.FileHandler(log_file)
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+logger.addHandler(file_handler)
+
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+logger.addHandler(console_handler)
+
+# ---------------------------
+# Streamlit UI
+# ---------------------------
+
+# Page title and logo
 image = Image.open('images/logo.png')
-
-st.image(image, use_column_width= True)
+st.image(image, use_column_width=True)
 
 st.write('''
 # Cyberbulling Tweet Recognition App
@@ -54,29 +62,22 @@ This app predicts the nature of the tweet into 6 Categories.
 
 # Text Box
 st.header('Enter Tweet ')
-tweet_input = st.text_area("Tweet Input", height= 150)
-print(tweet_input)
-st.write('''
-***
-''')
+tweet_input = st.text_area("Tweet Input", height=150)
+st.write('***')
 
-# print input on webpage
-st.header("Entered Tweet text ")
+# Display entered text
+st.header("Entered Tweet text")
 if tweet_input:
-    tweet_input
+    st.write(tweet_input)
 else:
-    st.write('''
-    ***No Tweet Text Entered!***
-    ''')
-st.write('''
-***
-''')
+    st.write('***No Tweet Text Entered!***')
+st.write('***')
 
-# Output on the page
+# Prediction Output
 st.header("Prediction")
 if tweet_input:
     prediction = custom_input_prediction(tweet_input)
-    logging.info(f"Prediction: {prediction} for input: {tweet_input}")  # <-- move it here
+    logging.info(f"Prediction: {prediction} for input: {tweet_input}")
 
     if prediction == "Age":
         st.image("images/age_cyberbullying.png", use_column_width=True)
@@ -91,15 +92,9 @@ if tweet_input:
     elif prediction == "Religion":
         st.image("images/religion_cyberbullying.png", use_column_width=True)
 else:
-    st.write('''
-    ***No Tweet Text Entered!***
-    ''')
+    st.write('***No Tweet Text Entered!***')
 
-
-logging.info(f"Prediction: {prediction} for input: {tweet_input}")
-
-
-st.write('''***''')
+st.write('***')
 
 # About section
 expand_bar = st.expander("About")

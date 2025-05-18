@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Web service (Streamlit app)
+  web-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./images:/app/images                       # images for Streamlit UI
+      - ./tdf_vectorizer:/app/tdf_vectorizer       # TF-IDF vectorizer
+      - ./model.bin:/app/model.bin                 # Trained ML model
+      - ./logs:/var/log/app                        # Log file mount for ELK
+    container_name: webapp-container
+    depends_on:
+      - logstash
+    environment:
+      - LOG_FILE_PATH=/var/log/app/webapp.log      # Location where app logs are written
+    networks:
+      - cyberbullying-network
+
+  # Elasticsearch for storing logs
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - cyberbullying-network
+
+  # Logstash for parsing logs from the app
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.0
+    volumes:
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logs:/var/log/app                        # Read logs from here
+    ports:
+      - "5044:5044"
+    depends_on:
+      - elasticsearch
+    networks:
+      - cyberbullying-network
+
+  # Kibana for visualizing logs
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.0
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - cyberbullying-network
+
+networks:
+  cyberbullying-network:
+    driver: bridge
+
+volumes:
+  elasticsearch-data:
+
