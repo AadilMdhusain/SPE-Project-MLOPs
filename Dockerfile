@@ -1,25 +1,32 @@
-# Use a Maven base image for building the application with OpenJDK 11
-FROM maven:3.8.3-openjdk-11 AS build
+# Use the official Python image
+FROM python:3.10-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 # Set working directory
 WORKDIR /app
 
-# Copy the pom.xml and source code
-COPY pom.xml .
-COPY src ./src
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Build the project using Maven
-RUN mvn clean install
+# Copy requirements and install
+COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-# Use OpenJDK 11 to run the application
-FROM openjdk:11-jre-slim
+# Download NLTK data
+RUN python -m nltk.downloader punkt wordnet stopwords
 
-# Set working directory
-WORKDIR /app
+# Copy project files
+COPY . .
 
-# Copy the JAR file from the build image
-COPY --from=build /app/target/ScientificCalculator1-1.0-SNAPSHOT.jar /app/scientific-calculator.jar
+# Expose Streamlit port
+EXPOSE 8501
 
-# Command to run the JAR file
-CMD ["java", "-jar", "scientific-calculator.jar"]
+# Command to run the web app
+CMD ["streamlit", "run", "webapp.py"]
 

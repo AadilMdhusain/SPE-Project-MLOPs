@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = "aadilmhusain/cyberbullying-detection"   // Change to your Docker Hub repository
+        DOCKER_IMAGE = "aadilmhusain/cyberbullying-app"   // Change to your Docker Hub repository
     }
 
     stages {
