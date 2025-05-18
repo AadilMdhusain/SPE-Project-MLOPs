@@ -20,6 +20,18 @@ from nltk import PorterStemmer, WordNetLemmatizer
 from functions import *
 import pickle
 
+
+import logging
+import os
+
+log_file = os.getenv("LOG_FILE_PATH", "/var/log/app/webapp.log")
+logging.basicConfig(
+    filename=log_file,
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s'
+)
+
+
 # Page title
 
 image = Image.open('images/logo.png')
@@ -64,22 +76,28 @@ st.write('''
 st.header("Prediction")
 if tweet_input:
     prediction = custom_input_prediction(tweet_input)
+    logging.info(f"Prediction: {prediction} for input: {tweet_input}")  # <-- move it here
+
     if prediction == "Age":
-        st.image("images/age_cyberbullying.png",use_column_width= True)
+        st.image("images/age_cyberbullying.png", use_column_width=True)
     elif prediction == "Ethnicity":
-        st.image("images/ethnicity_cyberbullying.png",use_column_width= True)
+        st.image("images/ethnicity_cyberbullying.png", use_column_width=True)
     elif prediction == "Gender":
-        st.image("images/gender_cyberbullying.png",use_column_width= True)
+        st.image("images/gender_cyberbullying.png", use_column_width=True)
     elif prediction == "Not Cyberbullying":
-        st.image("images/not_cyberbullying.png",use_column_width= True)
+        st.image("images/not_cyberbullying.png", use_column_width=True)
     elif prediction == "Other Cyberbullying":
-        st.image("images/other_cyberbullying.png",use_column_width= True)
+        st.image("images/other_cyberbullying.png", use_column_width=True)
     elif prediction == "Religion":
-        st.image("images/religion_cyberbullying.png",use_column_width= True)
+        st.image("images/religion_cyberbullying.png", use_column_width=True)
 else:
     st.write('''
     ***No Tweet Text Entered!***
     ''')
+
+
+logging.info(f"Prediction: {prediction} for input: {tweet_input}")
+
 
 st.write('''***''')
 
