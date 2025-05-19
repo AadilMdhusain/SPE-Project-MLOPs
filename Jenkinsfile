@@ -48,6 +48,22 @@ pipeline {
             }
         }
 
+	 stage('Run Ansible Deployment') {
+            steps {
+
+		withCredentials([string(credentialsId: '1f19b1cc-84d4-48e6-97dd-78c831657141', variable: 'ANSIBLE_PASS')]){ 
+                sh '''
+                    echo "Creating Ansible inventory file..."
+                    echo "[myhosts]" > inventory.ini
+                    echo "localhost ansible_connection=local ansible_become_pass=${ANSIBLE_PASS}" >> inventory.ini
+
+                    echo "Running Ansible Playbook..."
+		    ansible-playbook -i inventory.ini deploy_calculator.yml --extra-vars "ansible_become_pass=${ANSIBLE_PASS}" -vvvv
+                '''
+		}
+            }
+        }
+
 	stage('Start Minikube and Apply Kubernetes Resources') {
     	    steps {
                 script {

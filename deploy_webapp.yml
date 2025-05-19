@@ -1,0 +1,30 @@
+- name: Deploy WebApp (Streamlit - webapp.py)
+  hosts: myhosts
+  become: yes
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull the latest Docker image for webapp
+      command: docker pull aadilmhusain/cyberbullying-app:latest
+
+    - name: Remove existing webapp container (if running)
+      command: docker rm -f webapp_container
+      ignore_errors: yes
+
+    - name: Run the WebApp container
+      command: >
+        docker run -dit --name webapp_container
+        -p 8501:8501
+        aadilmhusain/cyberbullying-app:latest
