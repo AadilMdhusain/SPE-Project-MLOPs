@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/659155446528730561/0b4468aaddf34643bf5b7bdcaf631b5a/artifacts
+end_time: 1747644282258
+entry_point_name: ''
+experiment_id: '659155446528730561'
+lifecycle_stage: active
+run_id: 0b4468aaddf34643bf5b7bdcaf631b5a
+run_name: sincere-grouse-123
+run_uuid: 0b4468aaddf34643bf5b7bdcaf631b5a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1747644280263
+status: 3
+tags: []
+user_id: aadil

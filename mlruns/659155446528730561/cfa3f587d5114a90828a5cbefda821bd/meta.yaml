@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/659155446528730561/cfa3f587d5114a90828a5cbefda821bd/artifacts
+end_time: 1747644053775
+entry_point_name: ''
+experiment_id: '659155446528730561'
+lifecycle_stage: active
+run_id: cfa3f587d5114a90828a5cbefda821bd
+run_name: spiffy-toad-728
+run_uuid: cfa3f587d5114a90828a5cbefda821bd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1747644052062
+status: 4
+tags: []
+user_id: aadil
