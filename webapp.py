@@ -99,6 +99,5 @@ st.write('***')
 # About section
 expand_bar = st.expander("About")
 expand_bar.markdown('''
-* **Source Code:** [https://github.com/apurvayadav/cyberbullying-tweet-recognition-app](https://github.com/apurvayadav/cyberbullying-tweet-recognition-app)
 * **Dataset:** [https://www.kaggle.com/datasets/andrewmvd/cyberbullying-classification](https://www.kaggle.com/datasets/andrewmvd/cyberbullying-classification)
 ''')

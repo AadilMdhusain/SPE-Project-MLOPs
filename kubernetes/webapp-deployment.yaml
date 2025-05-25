@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: webapp-container
-        image: aadilmhusain/cyberbullying-app  # This gets overwritten by Jenkins
+        image: aadilmhusain/cyberbullying-app  
         ports:
         - containerPort: 8501
         volumeMounts:
